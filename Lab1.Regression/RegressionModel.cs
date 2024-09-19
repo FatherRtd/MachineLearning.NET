@@ -7,10 +7,10 @@ namespace Lab1.Regression
     {
         public RegressionModel(int? generatorSeed = null)
         {
-            _mlContext = new MLContext();
+            _mlContext = new MLContext(generatorSeed);
 
             var dataGenerator = new DataGenerator(generatorSeed);
-            var randomData = dataGenerator.GenerateRandomData(1000);
+            var randomData = dataGenerator.GenerateRandomData(100);
 
             var data = _mlContext.Data.LoadFromEnumerable(randomData);
             _dataSplit = _mlContext.Data.TrainTestSplit(data, 0.3);

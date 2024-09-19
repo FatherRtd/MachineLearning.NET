@@ -5,7 +5,7 @@ using Lab1.Regression;
 
 Console.WriteLine("Hello, World!");
 
-var regressionModel = new RegressionModel();
+var regressionModel = new RegressionModel(123123);
 
 regressionModel.Train();
 
