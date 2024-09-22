@@ -1,29 +1,41 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Lab1.Regression.Data;
+using Lab1.Regression.Predictor;
+using Lab1.Regression.Trainer;
 
-using System.Text;
-using Lab1.Regression;
+Console.WriteLine("Hello World");
 
-Console.WriteLine("Hello, World!");
+var dataGenerator = new DataGenerator(123);
+var data = dataGenerator.Generate(1);
 
-var regressionModel = new RegressionModel(123123);
+var newSample = new ModelInput()
+{
+	X = (float)(9 * Math.PI / 2),
+};
 
-regressionModel.Train();
+var trainer = new FastTreeTrainer();
+TrainEvaluatePredict(trainer, newSample);
 
-var evaluation = regressionModel.Evaluate();
+static void TrainEvaluatePredict(TrainerBase trainer, ModelInput newSample)
+{
+	Console.WriteLine("*******************************");
+	Console.WriteLine($"{trainer.Name}");
+	Console.WriteLine("*******************************");
 
-var sb = new StringBuilder();
+	trainer.Fit();
 
-var evaluationString = sb.AppendLine($"Evaluation:")
-                         .AppendLine($"{nameof(evaluation.LossFunction)}: {evaluation.LossFunction})")
-                         .AppendLine($"{nameof(evaluation.MeanAbsoluteError)}: {evaluation.MeanAbsoluteError})")
-                         .AppendLine($"{nameof(evaluation.MeanSquaredError)}: {evaluation.MeanSquaredError})")
-                         .AppendLine($"{nameof(evaluation.RSquared)}: {evaluation.RSquared})")
-                         .AppendLine($"{nameof(evaluation.RootMeanSquaredError)}: {evaluation.RootMeanSquaredError})");
+	var modelMetrics = trainer.Evaluate();
 
-Console.WriteLine(evaluationString);
+	Console.WriteLine($"Loss Function: {modelMetrics.LossFunction:0.##}{Environment.NewLine}" +
+	                  $"Mean Absolute Error: {modelMetrics.MeanAbsoluteError:#.##}{Environment.NewLine}" +
+	                  $"Mean Squared Error: {modelMetrics.MeanSquaredError:#.##}{Environment.NewLine}" +
+	                  $"RSquared: {modelMetrics.RSquared:0.##}{Environment.NewLine}" +
+	                  $"Root Mean Squared Error: {modelMetrics.RootMeanSquaredError:#.##}");
 
+	trainer.Save();
 
-var x = 10;
-var result = regressionModel.Predict(x);
-Console.WriteLine($"Prediction result: {x} : {result.Score}");
-
+	var predictor = new Predictor();
+	var prediction = predictor.Predict(newSample);
+	Console.WriteLine("------------------------------");
+	Console.WriteLine($"For X: {newSample.X} Prediction Y: {prediction.Y}");
+	Console.WriteLine("------------------------------");
+}
