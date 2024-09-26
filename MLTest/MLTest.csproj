@@ -8,7 +8,4 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="3.0.1" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lab1.Regression\Lab1.Regression.csproj" />
-  </ItemGroup>
 </Project>
